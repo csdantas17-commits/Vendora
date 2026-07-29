@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendora — Sua retaguarda comercial inteligente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#0B1220; --panel:#F8F7F3; --panel-2:#FFFFFF;
+    --green:#047857; --green-d:#065F46; --green-l:#10B981;
+    --gold:#BFA46A; --gold-s:#F6F1E4;
+    --txt:#111827; --muted:#6B7280; --line:#E5E2D9;
+    --navy:#0B1220; --err:#D6493D; --err-s:#FBEAE8;
+    --disp:'Fraunces',Georgia,serif; --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{
+    font-family:var(--body); color:var(--txt); background:var(--navy);
+    display:grid; grid-template-columns:1.15fr .85fr; min-height:100vh;
+  }
+
+  /* ============ VITRINE (lado esquerdo) ============ */
+  .vitrine{
+    position:relative; overflow:hidden; color:#F8F7F3;
+    background:
+      radial-gradient(120% 90% at 12% 8%, rgba(4,120,87,.30), transparent 52%),
+      radial-gradient(90% 80% at 92% 95%, rgba(191,164,106,.20), transparent 58%),
+      var(--navy);
+    padding:48px 54px; display:flex; flex-direction:column; gap:34px;
+  }
+  .vitrine::after{
+    content:""; position:absolute; inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size:22px 22px; pointer-events:none;
+  }
+  .v-top{position:relative; z-index:1}
+  .logo{display:flex; align-items:center; gap:13px; margin-bottom:36px}
+  .logo svg{width:38px; height:38px; display:block}
+  .logo .wordmark{font-family:var(--disp); font-weight:600; font-size:24px; letter-spacing:.3px}
+  .v-eyebrow{
+    font-size:11.5px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+    color:var(--gold); margin-bottom:16px;
+  }
+  .v-hero{
+    font-family:var(--disp); font-weight:500; font-size:37px; line-height:1.14;
+    letter-spacing:-.5px; margin-bottom:16px; max-width:15ch;
+  }
+  .v-lead{font-size:15px; line-height:1.6; color:rgba(248,247,243,.74); max-width:44ch}
+
+  /* A EQUIPE — o diferencial mais marcante */
+  .v-team{position:relative; z-index:1}
+  .v-team-label{
+    font-size:11.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+    color:rgba(248,247,243,.5); margin-bottom:16px;
+  }
+  .agents{display:flex; flex-direction:column; gap:11px}
+  .agent{
+    display:flex; align-items:center; gap:13px;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+    border-radius:13px; padding:12px 15px; transition:transform .15s, border-color .15s;
+  }
+  .agent:hover{transform:translateX(3px); border-color:rgba(16,185,129,.35)}
+  .agent .ava{
+    width:38px; height:38px; border-radius:11px; flex:0 0 auto;
+    display:grid; place-items:center; font-size:18px;
+    background:rgba(16,185,129,.14); border:1px solid rgba(16,185,129,.3);
+  }
+  .agent .txt{flex:1; min-width:0}
+  .agent .nm{font-weight:700; font-size:13.5px; color:#F8F7F3}
+  .agent .rl{font-size:12px; color:rgba(248,247,243,.6); line-height:1.4}
+
+  .v-foot{position:relative; z-index:1; display:flex; gap:22px; flex-wrap:wrap; font-size:12.5px; color:rgba(248,247,243,.55)}
+  .v-foot b{color:var(--green-l); font-weight:700}
+
+  /* ============ ACESSO (lado direito) ============ */
+  .access{background:var(--panel); display:flex; align-items:center; justify-content:center; padding:40px}
+  .card{width:100%; max-width:380px}
+  .card .kicker{font-size:12.5px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--green-d); margin-bottom:8px}
+  .card h2{font-family:var(--disp); font-weight:600; font-size:28px; letter-spacing:-.3px; margin-bottom:6px}
+  .card .sub{font-size:14px; color:var(--muted); margin-bottom:26px; line-height:1.5}
+  .field{margin-bottom:15px}
+  .field label{display:block; font-size:13px; font-weight:600; margin-bottom:7px; color:var(--txt)}
+  .field input{
+    width:100%; padding:12px 14px; font-family:var(--body); font-size:14.5px; color:var(--txt);
+    background:var(--panel-2); border:1.5px solid var(--line); border-radius:11px; transition:border-color .15s, box-shadow .15s;
+  }
+  .field input:focus{outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(4,120,87,.12)}
+  .field input::placeholder{color:#B6B2A6}
+  .row-signup{display:none}
+  .row-signup.on{display:block}
+  .btn{
+    width:100%; padding:13px; font-family:var(--body); font-size:15px; font-weight:700; color:#fff;
+    background:var(--green); border:none; border-radius:11px; cursor:pointer; transition:background .15s, transform .05s; margin-top:6px;
+  }
+  .btn:hover{background:var(--green-d)}
+  .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.6; cursor:not-allowed}
+  .switch{margin-top:20px; font-size:13.5px; color:var(--muted); text-align:center}
+  .switch a{color:var(--green-d); font-weight:600; text-decoration:none; cursor:pointer}
+  .switch a:hover{text-decoration:underline}
+  .msg{margin-top:15px; padding:11px 14px; border-radius:10px; font-size:13.5px; line-height:1.5; display:none}
+  .msg.on{display:block}
+  .msg.err{background:var(--err-s); color:#9B2C22; border:1px solid rgba(214,73,61,.3)}
+  .msg.ok{background:#E4F1EB; color:var(--green-d); border:1px solid rgba(4,120,87,.3)}
+  .divider{height:1px; background:var(--line); margin:20px 0}
+  .foot{font-size:11.5px; color:var(--muted); text-align:center; margin-top:22px; line-height:1.5}
+
+  /* ============ RESPONSIVO ============ */
+  @media(max-width:900px){
+    body{grid-template-columns:1fr}
+    .vitrine{padding:40px 30px 34px; gap:26px}
+    .v-hero{font-size:30px}
+    .access{min-height:auto; padding:34px 30px 48px}
+    /* no celular, no máx 3 agentes pra não alongar demais */
+    .agent:nth-child(n+4){display:none}
+  }
+</style>
+</head>
+<body>
+  <!-- ============ VITRINE ============ -->
+  <div class="vitrine">
+    <div class="v-top">
+      <div class="logo">
+        <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-label="Vendora">
+          <polygon points="42,14 84,14 62,50" fill="#047857"/>
+          <polygon points="8,14 40,14 58,66 74,14 88,14 62,86 46,86" fill="#F8F7F3"/>
+        </svg>
+        <span class="wordmark">Vendora</span>
+      </div>
+      <div class="v-eyebrow">Retaguarda comercial inteligente</div>
+      <h1 class="v-hero">Uma equipe inteira cuidando das suas vendas.</h1>
+      <p class="v-lead">A Vendora atende seus clientes, monta os pedidos e cuida da sua carteira — enquanto você decide o que importa. Feita para o representante comercial que vende peças e não pode perder um cliente.</p>
+    </div>
+
+    <div class="v-team">
+      <div class="v-team-label">Conheça a sua equipe</div>
+      <div class="agents">
+        <div class="agent">
+          <div class="ava">🧠</div>
+          <div class="txt"><div class="nm">Gustavo · Gerente</div><div class="rl">Coordena o time e protege o seu tempo — só te chama pra decidir.</div></div>
+        </div>
+        <div class="agent">
+          <div class="ava">💬</div>
+          <div class="txt"><div class="nm">Ana · Atendimento</div><div class="rl">Conversa com o cliente no WhatsApp, entende o pedido, resolve o simples.</div></div>
+        </div>
+        <div class="agent">
+          <div class="ava">📋</div>
+          <div class="txt"><div class="nm">Pedro · Pedidos</div><div class="rl">Monta o pedido, separa por empresa e te entrega pronto pra aprovar.</div></div>
+        </div>
+        <div class="agent">
+          <div class="ava">🔁</div>
+          <div class="txt"><div class="nm">Silvio · Oportunidades</div><div class="rl">Traz de volta o cliente que sumiu e recupera vendas que pararam.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="v-foot">
+      <span><b>✓</b> Seus dados isolados e protegidos</span>
+      <span><b>✓</b> Cada empresa separada</span>
+      <span><b>✓</b> Você aprova cada pedido</span>
+    </div>
+  </div>
+
+  <!-- ============ ACESSO ============ -->
+  <div class="access">
+    <div class="card">
+      <div class="kicker" id="kicker">Bem-vindo de volta</div>
+      <h2 id="title">Entrar na sua conta</h2>
+      <p class="sub" id="subtitle">Acesse a sua retaguarda comercial.</p>
+
+      <div class="field row-signup" id="fieldNome">
+        <label for="nome">Seu nome</label>
+        <input type="text" id="nome" placeholder="Como quer ser chamado" autocomplete="name">
+      </div>
+      <div class="field row-signup" id="fieldEmpresa">
+        <label for="empresa">Sua empresa</label>
+        <input type="text" id="empresa" placeholder="Nome da sua representação" autocomplete="organization">
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="voce@email.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" placeholder="Sua senha" autocomplete="current-password">
+      </div>
+
+      <button class="btn" id="btnAcao">Entrar</button>
+      <div class="msg" id="msg"></div>
+
+      <div class="switch" id="switch">
+        Ainda não tem conta? <a id="toggleLink">Criar conta</a>
+      </div>
+
+      <div class="divider"></div>
+      <div class="foot">
+        Ao entrar, você concorda em manter seus dados e os dos seus clientes protegidos.<br>
+        Vendora · sua retaguarda comercial inteligente
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ===== Estado =====
+  let modo = "login";
+  const $ = id => document.getElementById(id);
+
+  // ===== Conexão Supabase (Vendora) =====
+  const SUPABASE_URL = "https://tsqzrfozyvnnlsxhqoyu.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_EApLmTUb_ucgoUuGcOWrlg_ohrGAk47";
+  let sb = null;
+  try { if (typeof supabase !== "undefined") sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }
+  catch (e) { console.warn("Supabase não inicializou:", e); }
+
+  function setModo(novo){
+    modo = novo;
+    const signup = modo === "signup";
+    document.querySelectorAll(".row-signup").forEach(el=>el.classList.toggle("on", signup));
+    $("kicker").textContent = signup ? "Comece agora" : "Bem-vindo de volta";
+    $("title").textContent = signup ? "Criar sua conta" : "Entrar na sua conta";
+    $("subtitle").textContent = signup ? "Monte a sua retaguarda comercial em minutos." : "Acesse a sua retaguarda comercial.";
+    $("btnAcao").textContent = signup ? "Criar conta" : "Entrar";
+    $("switch").innerHTML = signup
+      ? 'Já tem conta? <a id="toggleLink">Entrar</a>'
+      : 'Ainda não tem conta? <a id="toggleLink">Criar conta</a>';
+    limpaMsg();
+    $("senha").setAttribute("autocomplete", signup ? "new-password" : "current-password");
+  }
+
+  function mostraMsg(texto, tipo){ const m=$("msg"); m.textContent=texto; m.className="msg on "+tipo; }
+  function limpaMsg(){ $("msg").className = "msg"; }
+
+  // delegação: o container escuta o clique no link mesmo quando recriado
+  $("switch").addEventListener("click", (e)=>{
+    if(e.target && e.target.id === "toggleLink") setModo(modo==="login" ? "signup" : "login");
+  });
+
+  $("btnAcao").addEventListener("click", async ()=>{
+    const email = $("email").value.trim();
+    const senha = $("senha").value;
+    const btn = $("btnAcao");
+    if(!email || !senha){ mostraMsg("Preencha email e senha para continuar.", "err"); return; }
+    if(modo === "signup" && senha.length < 6){ mostraMsg("A senha precisa ter pelo menos 6 caracteres.", "err"); return; }
+
+    btn.disabled = true; const textoOriginal = btn.textContent;
+    btn.textContent = modo === "signup" ? "Criando..." : "Entrando...";
+
+    if(!sb){
+      mostraMsg("Não foi possível conectar ao servidor. Verifique sua internet e recarregue a página.", "err");
+      btn.disabled = false; btn.textContent = textoOriginal; return;
+    }
+    try{
+      if(modo === "signup"){
+        const nome = $("nome").value.trim();
+        const empresa = $("empresa").value.trim();
+        const { error } = await sb.auth.signUp({ email, password: senha, options: { data: { nome: nome || "Sem nome", empresa: empresa || null } } });
+        if(error) throw error;
+        mostraMsg("Conta criada! Verifique seu email para confirmar o acesso e depois faça login.", "ok");
+        setTimeout(()=>setModo("login"), 400);
+      } else {
+        const { error } = await sb.auth.signInWithPassword({ email, password: senha });
+        if(error) throw error;
+        mostraMsg("Tudo certo! Você está dentro. (Aqui entraria o seu painel.)", "ok");
+      }
+    } catch(err){
+      let texto = "Algo não deu certo. Tente de novo.";
+      const m = (err && err.message) ? err.message.toLowerCase() : "";
+      if(m.includes("invalid login")) texto = "Email ou senha incorretos. Confira e tente de novo.";
+      else if(m.includes("already registered") || m.includes("already been")) texto = "Este email já tem conta. Que tal entrar?";
+      else if(m.includes("confirm")) texto = "Confirme seu email antes de entrar (veja sua caixa de entrada).";
+      else if(err && err.message) texto = err.message;
+      mostraMsg(texto, "err");
+    } finally { btn.disabled = false; btn.textContent = textoOriginal; }
+  });
+
+  document.querySelectorAll("input").forEach(inp=>{
+    inp.addEventListener("keydown", e=>{ if(e.key==="Enter") $("btnAcao").click(); });
+  });
+</script>
+</body>
+</html>
