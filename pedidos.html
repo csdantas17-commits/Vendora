@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendora — Pedidos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220; --panel:#F8F7F3; --panel-2:#FFFFFF;
+    --green:#047857; --green-d:#065F46; --green-l:#10B981; --green-s:#E4F1EB;
+    --gold:#BFA46A; --gold-s:#F6F1E4;
+    --txt:#111827; --muted:#6B7280; --muted-2:#9AA1AC; --line:#E5E2D9;
+    --navy:#0B1220; --amber:#B45309; --amber-s:#F6EFE0; --amber-l:#D97706;
+    --blue:#3B6FD4; --blue-s:#E7EEFA;
+    --red:#D6493D; --red-s:#FBEAE8; --red-d:#9B2C22;
+    --disp:'Fraunces',Georgia,serif; --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--body); color:var(--txt); background:var(--panel); display:flex; min-height:100vh}
+
+  /* ===== MENU LATERAL ===== */
+  .side{width:236px; flex:0 0 236px; background:var(--navy); color:#F8F7F3; display:flex; flex-direction:column; padding:22px 0; position:sticky; top:0; height:100vh}
+  .side .brand{display:flex; align-items:center; gap:11px; padding:0 22px 22px}
+  .side .brand svg{width:32px; height:32px}
+  .side .brand .wm{font-family:var(--disp); font-weight:600; font-size:21px}
+  .side nav{display:flex; flex-direction:column; gap:2px; padding:8px 12px; flex:1}
+  .side .nav-label{font-size:10.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(248,247,243,.4); padding:12px 10px 6px}
+  .side a{display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px; color:rgba(248,247,243,.72); text-decoration:none; font-size:14px; font-weight:500; transition:background .15s,color .15s}
+  .side a .ico{width:19px; text-align:center; font-size:15px}
+  .side a:hover{background:rgba(255,255,255,.06); color:#F8F7F3}
+  .side a.on{background:var(--green); color:#fff; font-weight:600}
+  .side .side-foot{padding:14px 22px 0; border-top:1px solid rgba(255,255,255,.08); margin:0 12px}
+  .side .who{display:flex; align-items:center; gap:10px; padding-top:12px}
+  .side .who .av{width:34px;height:34px;border-radius:50%;background:var(--green);display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff}
+  .side .who .nm{font-size:13px;font-weight:600;color:#F8F7F3}
+  .side .who .em{font-size:11px;color:rgba(248,247,243,.5)}
+
+  /* ===== ÁREA PRINCIPAL ===== */
+  .main{flex:1; min-width:0; display:flex; flex-direction:column}
+  .topbar{height:60px; background:var(--panel-2); border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; padding:0 30px; position:sticky; top:0; z-index:5}
+  .topbar .ctx{display:flex; align-items:center; gap:10px; font-size:13px; color:var(--muted)}
+  .topbar .emp{display:inline-flex; align-items:center; gap:6px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:5px 10px; font-weight:600; color:var(--txt); font-size:12.5px}
+  .topbar .emp .dot{width:7px;height:7px;border-radius:50%;background:var(--green-l)}
+  .menu-btn{display:none; width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--panel-2);place-items:center;cursor:pointer;font-size:17px}
+
+  .content{padding:26px 30px; max-width:980px; width:100%}
+  .greet{margin-bottom:20px}
+  .greet .hi{font-family:var(--disp); font-weight:600; font-size:25px; letter-spacing:-.3px}
+  .greet .sub{font-size:14px; color:var(--muted); margin-top:2px}
+
+  /* ===== HERO: pedidos esperando ===== */
+  .hero{background:linear-gradient(135deg,#0B1220,#1a2a40); border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:20px 24px; margin-bottom:24px; display:flex; align-items:center; gap:24px; flex-wrap:wrap}
+  .hero .hl{display:flex; align-items:center; gap:16px; flex:1}
+  .hero .hic{width:48px;height:48px;border-radius:14px;background:rgba(4,120,87,.25);border:1px solid rgba(4,120,87,.4);display:grid;place-items:center;font-size:22px;flex:0 0 auto}
+  .hero .ht{color:#F8F7F3}
+  .hero .ht .hlbl{font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:rgba(248,247,243,.55); margin-bottom:5px}
+  .hero .ht .hbig{font-family:var(--disp); font-size:26px; font-weight:600; line-height:1.1}
+  .hero .ht .hbig span{color:var(--gold)}
+  .hero .ht .hdsc{font-size:13px; color:rgba(248,247,243,.65); margin-top:4px}
+  .hero .hstats{display:flex; gap:20px; flex-wrap:wrap}
+  .hero .hst{text-align:center; color:#F8F7F3}
+  .hero .hst .hn{font-family:var(--disp); font-size:22px; font-weight:600}
+  .hero .hst .nl{font-size:11px; color:rgba(248,247,243,.5)}
+
+  /* ===== FILTROS ===== */
+  .filtros{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap}
+  .filtro{padding:7px 14px; border-radius:20px; font-size:12.5px; font-weight:600; cursor:pointer; border:1.5px solid var(--line); background:var(--panel-2); color:var(--muted); transition:all .15s}
+  .filtro.on{background:var(--navy); color:#fff; border-color:var(--navy)}
+  .filtro .badge{display:inline-block; background:var(--red); color:#fff; font-size:10px; font-weight:800; padding:1px 6px; border-radius:10px; margin-left:5px}
+  .filtro.on .badge{background:var(--green)}
+
+  /* ===== CARDS DE PEDIDO ===== */
+  .sec-h{font-size:14px; font-weight:700; color:var(--txt); margin-bottom:12px; display:flex; align-items:center; gap:9px}
+  .pedidos-list{display:flex; flex-direction:column; gap:12px; margin-bottom:28px}
+
+  .pedido{background:var(--panel-2); border:1.5px solid var(--line); border-radius:16px; overflow:hidden; transition:box-shadow .15s}
+  .pedido:hover{box-shadow:0 4px 18px rgba(0,0,0,.07)}
+  .pedido.urgente{border-color:var(--amber-l); border-width:1.5px}
+
+  .ped-head{padding:14px 18px; display:flex; align-items:center; gap:13px; cursor:pointer}
+  .ped-av{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;flex:0 0 auto}
+  .ped-info{flex:1; min-width:0}
+  .ped-row1{display:flex; align-items:center; gap:9px; margin-bottom:2px}
+  .ped-nome{font-size:14.5px; font-weight:700; color:var(--txt)}
+  .nivel{font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:6px}
+  .nivel.a{background:#FEF3C7; color:#92400E}
+  .nivel.b{background:var(--blue-s); color:var(--blue)}
+  .nivel.c{background:var(--green-s); color:var(--green-d)}
+  .emp-tag{font-size:11px; font-weight:600; padding:2px 8px; border-radius:6px; background:var(--panel); border:1px solid var(--line); color:var(--muted)}
+  .ped-prev{font-size:12.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .ped-meta{text-align:right; flex:0 0 auto}
+  .ped-val{font-family:var(--disp); font-size:18px; font-weight:600; color:var(--txt)}
+  .ped-time{font-size:11px; color:var(--muted-2); margin-top:2px}
+
+  .ped-acoes{padding:0 18px 14px; display:flex; gap:9px; align-items:center}
+  .btn-apr{display:flex; align-items:center; gap:6px; background:var(--green); color:#fff; border:none; border-radius:10px; padding:10px 18px; font-family:var(--body); font-size:13.5px; font-weight:700; cursor:pointer; transition:background .15s, transform .05s}
+  .btn-apr:hover{background:var(--green-d)}
+  .btn-apr:active{transform:translateY(1px)}
+  .btn-edi{display:flex; align-items:center; gap:6px; background:var(--panel); color:var(--txt); border:1.5px solid var(--line); border-radius:10px; padding:9px 16px; font-family:var(--body); font-size:13.5px; font-weight:600; cursor:pointer; transition:background .15s}
+  .btn-edi:hover{background:var(--panel-2); border-color:var(--navy)}
+  .btn-rec{display:flex; align-items:center; gap:6px; background:transparent; color:var(--red); border:1.5px solid rgba(214,73,61,.3); border-radius:10px; padding:9px 16px; font-family:var(--body); font-size:13.5px; font-weight:600; cursor:pointer; transition:background .15s}
+  .btn-rec:hover{background:var(--red-s)}
+  .btn-det{margin-left:auto; font-size:12.5px; color:var(--green-d); font-weight:600; cursor:pointer; background:none; border:none; font-family:var(--body)}
+
+  /* ===== HISTÓRICO ===== */
+  .hist-list{display:flex; flex-direction:column; gap:9px}
+  .hist{background:var(--panel-2); border:1px solid var(--line); border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:13px; opacity:.85}
+  .hist .hav{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;font-weight:700;font-size:12px;color:#fff;flex:0 0 auto}
+  .hist .hnm{font-size:13.5px; font-weight:600; flex:1}
+  .hist .hval{font-size:13.5px; font-weight:700; font-family:var(--disp)}
+  .hist .hstatus{font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:7px}
+  .hstatus.apr{background:var(--green-s); color:var(--green-d)}
+  .hstatus.rec{background:var(--red-s); color:var(--red-d)}
+
+  .demo-tag{position:fixed; bottom:14px; right:14px; background:var(--navy); color:#fff; font-size:11px; font-weight:600; padding:6px 12px; border-radius:20px; opacity:.85; z-index:20}
+
+  /* ===== MODAL DETALHE ===== */
+  .overlay{position:fixed; inset:0; background:rgba(11,18,32,.55); display:none; align-items:center; justify-content:center; z-index:40; padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:var(--panel); width:100%; max-width:520px; max-height:90vh; border-radius:20px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 24px 60px rgba(0,0,0,.28)}
+  .modal-head{background:var(--panel-2); border-bottom:1px solid var(--line); padding:16px 20px; display:flex; align-items:center; gap:13px}
+  .modal-head .mav{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-weight:700;color:#fff;font-size:14px}
+  .modal-head .minfo .mn{font-size:15px; font-weight:700}
+  .modal-head .minfo .ms{font-size:12px; color:var(--muted); margin-top:1px}
+  .modal-head .close{margin-left:auto; width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:15px;color:var(--muted)}
+  .modal-body{padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:16px}
+  .m-sec{font-size:11.5px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:8px}
+  .item-row{display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line)}
+  .item-row:last-child{border-bottom:none}
+  .item-row .inm{font-size:13.5px; font-weight:600}
+  .item-row .idet{font-size:12px; color:var(--muted); margin-top:1px}
+  .item-row .iprc{font-size:13.5px; font-weight:700; text-align:right}
+  .item-row .iqt{font-size:11.5px; color:var(--muted); text-align:right}
+  .total-row{display:flex; justify-content:space-between; align-items:center; background:var(--green-s); border-radius:11px; padding:12px 14px}
+  .total-row .tl{font-size:13px; font-weight:700; color:var(--green-d)}
+  .total-row .tv{font-family:var(--disp); font-size:22px; font-weight:600; color:var(--green-d)}
+  .cond-box{background:var(--gold-s); border:1px solid rgba(191,164,106,.3); border-radius:11px; padding:12px 14px; font-size:13px; line-height:1.5}
+  .modal-foot{padding:16px 20px; border-top:1px solid var(--line); background:var(--panel-2); display:flex; gap:9px}
+  .modal-foot .btn-apr{flex:1; justify-content:center; padding:12px}
+  .modal-foot .btn-edi{padding:12px 16px}
+  .modal-foot .btn-rec{padding:12px 16px}
+
+  /* TOAST */
+  .toast{position:fixed; bottom:56px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--navy); color:#fff; padding:11px 22px; border-radius:12px; font-size:13.5px; font-weight:600; opacity:0; transition:opacity .25s, transform .25s; z-index:50; pointer-events:none}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  @media(max-width:860px){
+    .side{position:fixed; left:-236px; z-index:30; transition:left .2s; box-shadow:4px 0 24px rgba(0,0,0,.2)}
+    .side.open{left:0}
+    .menu-btn{display:grid!important}
+    .hero{flex-direction:column; align-items:flex-start}
+    .ped-acoes{flex-wrap:wrap}
+  }
+</style>
+</head>
+<body>
+
+  <!-- MENU LATERAL -->
+  <aside class="side" id="side">
+    <div class="brand">
+      <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><polygon points="42,14 84,14 62,50" fill="#047857"/><polygon points="8,14 40,14 58,66 74,14 88,14 62,86 46,86" fill="#F8F7F3"/></svg>
+      <span class="wm">Vendora</span>
+    </div>
+    <nav>
+      <a href="painel.html"><span class="ico">🏠</span> Resumo do dia</a>
+      <a href="conversas.html"><span class="ico">💬</span> Conversas</a>
+      <a class="on" href="pedidos.html"><span class="ico">✅</span> Pedidos</a>
+      <a href="#"><span class="ico">👥</span> Clientes</a>
+      <a href="#"><span class="ico">🏢</span> Minhas empresas</a>
+      <a href="#"><span class="ico">📦</span> Catálogo</a>
+      <div class="nav-label">Conta</div>
+      <a href="#"><span class="ico">⚙️</span> Configurações</a>
+    </nav>
+    <div class="side-foot"><div class="who"><div class="av">C</div><div><div class="nm">Cleber</div><div class="em">Cleber Representações</div></div></div></div>
+  </aside>
+
+  <!-- ÁREA PRINCIPAL -->
+  <div class="main">
+    <div class="topbar">
+      <div class="ctx">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <span>Vendendo por:</span>
+        <span class="emp"><span class="dot"></span> Furacão</span>
+        <span class="emp"><span class="dot"></span> Rolês</span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="greet">
+        <div class="hi">Pedidos</div>
+        <div class="sub">O Pedro preparou tudo — falta só o seu "ok".</div>
+      </div>
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hl">
+          <div class="hic">📋</div>
+          <div class="ht">
+            <div class="hlbl">Aguardando você</div>
+            <div class="hbig"><span>3 pedidos</span> prontos pra aprovar</div>
+            <div class="hdsc">O Pedro montou cada um — confira e dê o seu ok.</div>
+          </div>
+        </div>
+        <div class="hstats">
+          <div class="hst"><div class="hn">R$ 8.430</div><div class="nl">em valor total</div></div>
+          <div class="hst"><div class="hn">3</div><div class="nl">aguardando</div></div>
+          <div class="hst"><div class="hn">8</div><div class="nl">aprovados hoje</div></div>
+        </div>
+      </div>
+
+      <!-- FILTROS -->
+      <div class="filtros">
+        <div class="filtro on">Aguardando você <span class="badge">3</span></div>
+        <div class="filtro">Aprovados hoje</div>
+        <div class="filtro">Todos do dia</div>
+      </div>
+
+      <!-- PEDIDOS AGUARDANDO -->
+      <div class="sec-h">📋 Aguardando aprovação</div>
+      <div class="pedidos-list">
+
+        <!-- Pedido 1 -->
+        <div class="pedido urgente" id="ped1">
+          <div class="ped-head" onclick="abrirDetalhe('ped1')">
+            <div class="ped-av" style="background:#047857">AP</div>
+            <div class="ped-info">
+              <div class="ped-row1">
+                <span class="ped-nome">Auto Peças Silva</span>
+                <span class="nivel a">nível A</span>
+                <span class="emp-tag">Furacão</span>
+              </div>
+              <div class="ped-prev">4× Amortecedor Cofap dianteiro Gol · 2× Pastilha Nakata</div>
+            </div>
+            <div class="ped-meta">
+              <div class="ped-val">R$ 3.240</div>
+              <div class="ped-time">há 8 min</div>
+            </div>
+          </div>
+          <div class="ped-acoes">
+            <button class="btn-apr" onclick="aprovar('ped1','Auto Peças Silva')">✓ Aprovar</button>
+            <button class="btn-edi" onclick="abrirDetalhe('ped1')">✎ Editar</button>
+            <button class="btn-rec" onclick="recusar('ped1','Auto Peças Silva')">✕ Recusar</button>
+            <button class="btn-det" onclick="abrirDetalhe('ped1')">ver detalhe →</button>
+          </div>
+        </div>
+
+        <!-- Pedido 2 -->
+        <div class="pedido" id="ped2">
+          <div class="ped-head" onclick="abrirDetalhe('ped2')">
+            <div class="ped-av" style="background:#3B6FD4">OZ</div>
+            <div class="ped-info">
+              <div class="ped-row1">
+                <span class="ped-nome">Oficina do Zé</span>
+                <span class="nivel b">nível B</span>
+                <span class="emp-tag">Rolês</span>
+              </div>
+              <div class="ped-prev">4× Pastilha LUK · 2× Disco freio SAC dianteiro</div>
+            </div>
+            <div class="ped-meta">
+              <div class="ped-val">R$ 1.890</div>
+              <div class="ped-time">há 15 min</div>
+            </div>
+          </div>
+          <div class="ped-acoes">
+            <button class="btn-apr" onclick="aprovar('ped2','Oficina do Zé')">✓ Aprovar</button>
+            <button class="btn-edi" onclick="abrirDetalhe('ped2')">✎ Editar</button>
+            <button class="btn-rec" onclick="recusar('ped2','Oficina do Zé')">✕ Recusar</button>
+            <button class="btn-det" onclick="abrirDetalhe('ped2')">ver detalhe →</button>
+          </div>
+        </div>
+
+        <!-- Pedido 3 -->
+        <div class="pedido" id="ped3">
+          <div class="ped-head" onclick="abrirDetalhe('ped3')">
+            <div class="ped-av" style="background:#B45309">AC</div>
+            <div class="ped-info">
+              <div class="ped-row1">
+                <span class="ped-nome">Auto Peças Cardoso</span>
+                <span class="nivel c">nível C</span>
+                <span class="emp-tag">Furacão</span>
+              </div>
+              <div class="ped-prev">1× Kit embreagem Cofap Palio Fire · 3× Vela NGK</div>
+            </div>
+            <div class="ped-meta">
+              <div class="ped-val">R$ 3.300</div>
+              <div class="ped-time">há 22 min</div>
+            </div>
+          </div>
+          <div class="ped-acoes">
+            <button class="btn-apr" onclick="aprovar('ped3','Auto Peças Cardoso')">✓ Aprovar</button>
+            <button class="btn-edi" onclick="abrirDetalhe('ped3')">✎ Editar</button>
+            <button class="btn-rec" onclick="recusar('ped3','Auto Peças Cardoso')">✕ Recusar</button>
+            <button class="btn-det" onclick="abrirDetalhe('ped3')">ver detalhe →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTÓRICO DO DIA -->
+      <div class="sec-h">📂 Processados hoje</div>
+      <div class="hist-list">
+        <div class="hist">
+          <div class="hav" style="background:#047857">AV</div>
+          <div class="hnm">Auto Center Vega</div>
+          <div class="hval">R$ 1.420</div>
+          <div class="hstatus apr">✓ Aprovado</div>
+        </div>
+        <div class="hist">
+          <div class="hav" style="background:#3B6FD4">OM</div>
+          <div class="hnm">Oficina do Márcio</div>
+          <div class="hval">R$ 560</div>
+          <div class="hstatus apr">✓ Aprovado</div>
+        </div>
+        <div class="hist">
+          <div class="hav" style="background:#6B7280">PX</div>
+          <div class="hnm">Peças Xis</div>
+          <div class="hval">R$ 280</div>
+          <div class="hstatus rec">✕ Recusado</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-tag">demonstração · dados de exemplo</div>
+
+  <!-- MODAL DETALHE -->
+  <div class="overlay" id="overlay" onclick="if(event.target===this)fecharDetalhe()">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="mav" id="mAv" style="background:#047857">AP</div>
+        <div class="minfo"><div class="mn" id="mNome">Auto Peças Silva</div><div class="ms" id="mEmp">Furacão · nível A</div></div>
+        <button class="close" onclick="fecharDetalhe()">✕</button>
+      </div>
+      <div class="modal-body" id="mBody"></div>
+      <div class="modal-foot" id="mFoot">
+        <button class="btn-apr" id="mBtnApr">✓ Aprovar</button>
+        <button class="btn-edi">✎ Editar</button>
+        <button class="btn-rec" id="mBtnRec">✕ Recusar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+<script>
+  // menu
+  const side=document.getElementById('side'), menuBtn=document.getElementById('menuBtn');
+  if(menuBtn) menuBtn.addEventListener('click',()=>side.classList.toggle('open'));
+  document.querySelectorAll('.side a').forEach(a=>a.addEventListener('click',()=>{if(window.innerWidth<=860)side.classList.remove('open')}));
+
+  // dados dos pedidos
+  const PEDIDOS = {
+    ped1:{
+      av:"AP", cor:"#047857", nome:"Auto Peças Silva", emp:"Furacão · nível A",
+      itens:[
+        {nm:"Amortecedor Cofap dianteiro Gol", det:"Gol quadrado 92 · sem direção", qt:"4 un", prc:"R$ 648,00"},
+        {nm:"Pastilha de freio Nakata dianteira", det:"Gol / Voyage / Parati", qt:"2 jg", prc:"R$ 276,00"},
+      ],
+      total:"R$ 3.240,00",
+      cond:"Cliente nível A — desconto de 8% já aplicado. Prazo de entrega: 1 dia útil. Pagamento: boleto 30 dias.",
+    },
+    ped2:{
+      av:"OZ", cor:"#3B6FD4", nome:"Oficina do Zé", emp:"Rolês · nível B",
+      itens:[
+        {nm:"Pastilha de freio LUK dianteira", det:"Palio Fire / Uno", qt:"4 jg", prc:"R$ 880,00"},
+        {nm:"Disco de freio SAC dianteiro", det:"Palio / Uno 2005+", qt:"2 jg", prc:"R$ 1.010,00"},
+      ],
+      total:"R$ 1.890,00",
+      cond:"Cliente nível B — condição padrão sem desconto. Prazo: 2 dias úteis. Pagamento: à vista.",
+    },
+    ped3:{
+      av:"AC", cor:"#B45309", nome:"Auto Peças Cardoso", emp:"Furacão · nível C",
+      itens:[
+        {nm:"Kit embreagem Cofap", det:"Palio Fire 1.0 / 1.3 2001-2010", qt:"1 kt", prc:"R$ 318,00"},
+        {nm:"Vela de ignição NGK", det:"Motor Fire 1.0/1.3", qt:"3 jg", prc:"R$ 2.982,00"},
+      ],
+      total:"R$ 3.300,00",
+      cond:"Cliente nível C — condição padrão. Prazo: 2 dias úteis. Verificar estoque antes de confirmar.",
+    },
+  };
+
+  let pedAtivo = null;
+
+  function abrirDetalhe(id){
+    const p=PEDIDOS[id]; if(!p) return;
+    pedAtivo = id;
+    document.getElementById('mAv').textContent=p.av;
+    document.getElementById('mAv').style.background=p.cor;
+    document.getElementById('mNome').textContent=p.nome;
+    document.getElementById('mEmp').textContent=p.emp;
+    const body=document.getElementById('mBody');
+    body.innerHTML=`
+      <div><div class="m-sec">Itens do pedido</div>${
+        p.itens.map(i=>`<div class="item-row"><div><div class="inm">${i.nm}</div><div class="idet">${i.det}</div></div><div><div class="iprc">${i.prc}</div><div class="iqt">${i.qt}</div></div></div>`).join('')
+      }</div>
+      <div class="total-row"><span class="tl">Total do pedido</span><span class="tv">${p.total}</span></div>
+      <div><div class="m-sec">Condições</div><div class="cond-box">${p.cond}</div></div>
+    `;
+    document.getElementById('mBtnApr').onclick=()=>{fecharDetalhe();aprovar(id,p.nome)};
+    document.getElementById('mBtnRec').onclick=()=>{fecharDetalhe();recusar(id,p.nome)};
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function fecharDetalhe(){ document.getElementById('overlay').classList.remove('open'); }
+
+  function mostrarToast(msg, cor){
+    const t=document.getElementById('toast');
+    t.textContent=msg; t.style.background=cor||'#0B1220';
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2800);
+  }
+
+  function aprovar(id, nome){
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.style.opacity='0'; el.style.transform='translateX(20px)'; el.style.transition='all .35s';
+    setTimeout(()=>el.remove(),360);
+    mostrarToast(`✓ Pedido de ${nome} aprovado!`, '#065F46');
+    atualizarContador(-1);
+  }
+
+  function recusar(id, nome){
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.style.opacity='0'; el.style.transform='translateX(-20px)'; el.style.transition='all .35s';
+    setTimeout(()=>el.remove(),360);
+    mostrarToast(`✕ Pedido de ${nome} recusado.`, '#9B2C22');
+    atualizarContador(-1);
+  }
+
+  function atualizarContador(delta){
+    const badge=document.querySelector('.filtro.on .badge');
+    if(badge){ const n=parseInt(badge.textContent)+delta; badge.textContent=n<0?0:n; }
+  }
+
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') fecharDetalhe(); });
+</script>
+</body>
+</html>
