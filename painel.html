@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendora — Resumo do dia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220; --panel:#F8F7F3; --panel-2:#FFFFFF;
+    --green:#047857; --green-d:#065F46; --green-l:#10B981; --green-s:#E4F1EB;
+    --gold:#BFA46A; --gold-s:#F6F1E4;
+    --txt:#111827; --muted:#6B7280; --muted-2:#9AA1AC; --line:#E5E2D9;
+    --navy:#0B1220; --amber:#B45309; --amber-s:#F6EFE0;
+    --blue:#3B6FD4; --blue-s:#E7EEFA; --red:#D6493D; --red-s:#FBEAE8;
+    --disp:'Fraunces',Georgia,serif; --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--body); color:var(--txt); background:var(--panel); display:flex; min-height:100vh}
+
+  /* ===== MENU LATERAL ===== */
+  .side{
+    width:236px; flex:0 0 236px; background:var(--navy); color:#F8F7F3;
+    display:flex; flex-direction:column; padding:22px 0; position:sticky; top:0; height:100vh;
+  }
+  .side .brand{display:flex; align-items:center; gap:11px; padding:0 22px 22px}
+  .side .brand svg{width:32px; height:32px; display:block}
+  .side .brand .wm{font-family:var(--disp); font-weight:600; font-size:21px}
+  .side nav{display:flex; flex-direction:column; gap:2px; padding:8px 12px; flex:1}
+  .side .nav-label{font-size:10.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(248,247,243,.4); padding:12px 10px 6px}
+  .side a{
+    display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px;
+    color:rgba(248,247,243,.72); text-decoration:none; font-size:14px; font-weight:500; transition:background .15s, color .15s;
+  }
+  .side a .ico{width:19px; text-align:center; font-size:15px; opacity:.9}
+  .side a:hover{background:rgba(255,255,255,.06); color:#F8F7F3}
+  .side a.on{background:var(--green); color:#fff; font-weight:600}
+  .side a.on .ico{opacity:1}
+  .side .side-foot{padding:14px 22px 0; border-top:1px solid rgba(255,255,255,.08); margin:0 12px}
+  .side .who{display:flex; align-items:center; gap:10px; padding-top:12px}
+  .side .who .av{width:34px;height:34px;border-radius:50%;background:var(--green);display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;flex:0 0 auto}
+  .side .who .nm{font-size:13px;font-weight:600;color:#F8F7F3;line-height:1.3}
+  .side .who .em{font-size:11px;color:rgba(248,247,243,.5)}
+
+  /* ===== ÁREA PRINCIPAL ===== */
+  .main{flex:1; min-width:0; display:flex; flex-direction:column}
+  .topbar{
+    height:60px; background:var(--panel-2); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; padding:0 30px; position:sticky; top:0; z-index:5;
+  }
+  .topbar .ctx{display:flex; align-items:center; gap:10px; font-size:13px; color:var(--muted)}
+  .topbar .ctx .emp{display:inline-flex; align-items:center; gap:6px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:5px 10px; font-weight:600; color:var(--txt); font-size:12.5px}
+  .topbar .ctx .emp .dot{width:7px;height:7px;border-radius:50%;background:var(--green-l)}
+  .topbar .alerts{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--amber); font-weight:600}
+
+  .content{padding:30px; max-width:1080px; width:100%}
+  .greet{margin-bottom:24px}
+  .greet .hi{font-family:var(--disp); font-weight:600; font-size:27px; letter-spacing:-.3px; color:var(--txt)}
+  .greet .sub{font-size:14px; color:var(--muted); margin-top:3px}
+
+  /* bloco principal — o que precisa de você */
+  .hero-block{
+    background:linear-gradient(135deg, #065F46, #047857); color:#fff; border-radius:18px;
+    padding:24px 26px; margin-bottom:22px; display:flex; align-items:center; justify-content:space-between; gap:20px;
+    box-shadow:0 8px 24px rgba(4,120,87,.18);
+  }
+  .hero-block .lft .lbl{font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,.7); margin-bottom:8px}
+  .hero-block .lft .big{font-family:var(--disp); font-weight:600; font-size:30px; line-height:1.15}
+  .hero-block .lft .big span{color:var(--gold)}
+  .hero-block .lft .dsc{font-size:13.5px; color:rgba(255,255,255,.8); margin-top:6px}
+  .hero-block .cta{
+    background:#fff; color:var(--green-d); border:none; border-radius:11px; padding:13px 22px;
+    font-family:var(--body); font-weight:700; font-size:14.5px; cursor:pointer; white-space:nowrap; transition:transform .05s;
+  }
+  .hero-block .cta:active{transform:translateY(1px)}
+
+  /* grid de blocos-resumo */
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:22px}
+  .card{background:var(--panel-2); border:1px solid var(--line); border-radius:16px; padding:20px; position:relative; overflow:hidden}
+  .card .top{display:flex; align-items:center; gap:9px; margin-bottom:14px}
+  .card .top .ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:15px}
+  .card .top .t{font-size:13px; font-weight:700; color:var(--txt)}
+  .card .metric{font-family:var(--disp); font-weight:600; font-size:32px; color:var(--txt); line-height:1}
+  .card .metric small{font-size:15px; color:var(--muted); font-weight:500; font-family:var(--body)}
+  .card .note{font-size:12.5px; color:var(--muted); margin-top:7px; line-height:1.4}
+  .card .trend{display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700; margin-top:9px; padding:3px 8px; border-radius:6px}
+  .trend.up{background:var(--green-s); color:var(--green-d)}
+  .ic.g{background:var(--green-s)} .ic.b{background:var(--blue-s)} .ic.a{background:var(--amber-s)} .ic.d{background:var(--gold-s)}
+
+  /* linha de duas colunas: empresas + atenção */
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .panel{background:var(--panel-2); border:1px solid var(--line); border-radius:16px; padding:20px}
+  .panel .ph{display:flex; align-items:center; justify-content:space-between; margin-bottom:15px}
+  .panel .ph .t{font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px}
+  .panel .ph .see{font-size:12.5px; color:var(--green-d); font-weight:600; text-decoration:none; cursor:pointer}
+  .emp-row{display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid var(--line)}
+  .emp-row:last-child{border-bottom:none}
+  .emp-row .el{display:flex; align-items:center; gap:11px}
+  .emp-row .badge{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-weight:700;font-size:13px;color:#fff;flex:0 0 auto}
+  .emp-row .nm{font-size:13.5px; font-weight:600; color:var(--txt)}
+  .emp-row .mt{font-size:11.5px; color:var(--muted)}
+  .emp-row .st{font-size:11.5px; font-weight:700; color:var(--green-d); display:flex; align-items:center; gap:5px}
+  .emp-row .st .d{width:7px;height:7px;border-radius:50%;background:var(--green-l)}
+  .att{display:flex; align-items:flex-start; gap:11px; padding:11px 0; border-bottom:1px solid var(--line)}
+  .att:last-child{border-bottom:none}
+  .att .ai{width:30px;height:30px;border-radius:8px;background:var(--amber-s);display:grid;place-items:center;font-size:14px;flex:0 0 auto}
+  .att .txt{flex:1}
+  .att .att-t{font-size:13px; font-weight:600; color:var(--txt)}
+  .att .att-d{font-size:12px; color:var(--muted); margin-top:1px}
+  .att .go{font-size:12px; color:var(--green-d); font-weight:600; cursor:pointer; white-space:nowrap}
+
+  .demo-tag{position:fixed; bottom:14px; right:14px; background:var(--navy); color:#fff; font-size:11px; font-weight:600; padding:6px 12px; border-radius:20px; opacity:.85; z-index:20}
+
+  /* responsivo */
+  @media(max-width:860px){
+    .side{position:fixed; left:-236px; z-index:30; transition:left .2s; box-shadow:4px 0 24px rgba(0,0,0,.2)}
+    .side.open{left:0}
+    .grid{grid-template-columns:1fr}
+    .two{grid-template-columns:1fr}
+    .hero-block{flex-direction:column; align-items:flex-start}
+    .menu-btn{display:grid!important}
+  }
+  .menu-btn{display:none; width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--panel-2);place-items:center;cursor:pointer;font-size:17px}
+</style>
+</head>
+<body>
+  <!-- MENU LATERAL -->
+  <aside class="side" id="side">
+    <div class="brand">
+      <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-label="Vendora">
+        <polygon points="42,14 84,14 62,50" fill="#047857"/>
+        <polygon points="8,14 40,14 58,66 74,14 88,14 62,86 46,86" fill="#F8F7F3"/>
+      </svg>
+      <span class="wm">Vendora</span>
+    </div>
+    <nav>
+      <a class="on" href="painel.html"><span class="ico">🏠</span> Resumo do dia</a>
+      <a href="conversas.html"><span class="ico">💬</span> Conversas</a>
+      <a href="#"><span class="ico">✅</span> Pedidos</a>
+      <a href="#"><span class="ico">👥</span> Clientes</a>
+      <a href="#"><span class="ico">🏢</span> Minhas empresas</a>
+      <a href="#"><span class="ico">📦</span> Catálogo</a>
+      <div class="nav-label">Conta</div>
+      <a href="#"><span class="ico">⚙️</span> Configurações</a>
+    </nav>
+    <div class="side-foot">
+      <div class="who">
+        <div class="av">C</div>
+        <div><div class="nm">Cleber</div><div class="em">Cleber Representações</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ÁREA PRINCIPAL -->
+  <div class="main">
+    <div class="topbar">
+      <div class="ctx">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <span>Vendendo por:</span>
+        <span class="emp"><span class="dot"></span> Furacão</span>
+        <span class="emp"><span class="dot"></span> Rolês</span>
+      </div>
+      <div class="alerts">🔔 2 coisas pedem você</div>
+    </div>
+
+    <div class="content">
+      <div class="greet">
+        <div class="hi">Bom dia, Cleber.</div>
+        <div class="sub">Aqui está o seu dia, sexta-feira, 30 de julho.</div>
+      </div>
+
+      <!-- BLOCO PRINCIPAL: o que precisa de você -->
+      <div class="hero-block">
+        <div class="lft">
+          <div class="lbl">O que precisa de você</div>
+          <div class="big"><span>3 pedidos</span> esperando a sua aprovação</div>
+          <div class="dsc">A equipe já preparou tudo — falta só o seu "ok" pra fechar.</div>
+        </div>
+        <button class="cta">Ver pedidos →</button>
+      </div>
+
+      <!-- GRID DE RESUMO -->
+      <div class="grid">
+        <a href="conversas.html" class="card" style="text-decoration:none; color:inherit; display:block; cursor:pointer">
+          <div class="top"><div class="ic g">💬</div><div class="t">Atendimentos hoje</div></div>
+          <div class="metric">42</div>
+          <div class="note">A Ana já respondeu 84 mensagens. <b style="color:var(--green-d)">Ver conversas →</b></div>
+          <div class="trend up">▲ +50% vs. média</div>
+        </a>
+        <div class="card">
+          <div class="top"><div class="ic b">⚡</div><div class="t">Tempo de resposta</div></div>
+          <div class="metric">4<small>s</small></div>
+          <div class="note">Tempo médio pra dar o primeiro retorno.</div>
+          <div class="trend up">▲ dentro da meta (5s)</div>
+        </div>
+        <div class="card">
+          <div class="top"><div class="ic d">📦</div><div class="t">Pedidos do dia</div></div>
+          <div class="metric">R$ 8.430</div>
+          <div class="note">Em 11 pedidos montados pela equipe.</div>
+          <div class="trend up">▲ 64% resolvido sem você</div>
+        </div>
+      </div>
+
+      <!-- DUAS COLUNAS: empresas + atenção -->
+      <div class="two">
+        <div class="panel">
+          <div class="ph"><div class="t">🏢 Suas empresas</div><a class="see">ver todas</a></div>
+          <div class="emp-row">
+            <div class="el"><div class="badge" style="background:#047857">FW</div><div><div class="nm">FW Distribuidora · Furacão</div><div class="mt">Cofap · Nakata · SKF · e outras</div></div></div>
+            <div class="st"><span class="d"></span> no ar</div>
+          </div>
+          <div class="emp-row">
+            <div class="el"><div class="badge" style="background:#0B1220">RO</div><div><div class="nm">Rolês</div><div class="mt">LUK · SAC · VAL · preço na hora</div></div></div>
+            <div class="st"><span class="d"></span> no ar</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="ph"><div class="t">👀 Atenção</div><a class="see">ver tudo</a></div>
+          <div class="att">
+            <div class="ai">🔁</div>
+            <div class="txt"><div class="att-t">2 clientes parados</div><div class="att-d">Sumiram faz um tempo — o Silvio quer trazer de volta.</div></div>
+            <span class="go">ver →</span>
+          </div>
+          <div class="att">
+            <div class="ai">🚚</div>
+            <div class="txt"><div class="att-t">1 entrega atrasada</div><div class="att-d">A Luciana já avisou o cliente e cobra a fábrica.</div></div>
+            <span class="go">ver →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-tag">demonstração · dados de exemplo</div>
+
+<script>
+  // menu lateral no mobile
+  const side = document.getElementById('side');
+  const menuBtn = document.getElementById('menuBtn');
+  if(menuBtn){ menuBtn.addEventListener('click', ()=> side.classList.toggle('open')); }
+  // fechar menu ao clicar num item (mobile)
+  document.querySelectorAll('.side a').forEach(a=>{
+    a.addEventListener('click', ()=>{ if(window.innerWidth<=860) side.classList.remove('open'); });
+  });
+</script>
+</body>
+</html>
