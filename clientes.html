@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendora — Clientes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220; --panel:#F8F7F3; --panel-2:#FFFFFF;
+    --green:#047857; --green-d:#065F46; --green-l:#10B981; --green-s:#E4F1EB;
+    --gold:#BFA46A; --gold-s:#F6F1E4;
+    --txt:#111827; --muted:#6B7280; --muted-2:#9AA1AC; --line:#E5E2D9;
+    --navy:#0B1220; --amber:#B45309; --amber-s:#F6EFE0; --amber-l:#D97706;
+    --blue:#3B6FD4; --blue-s:#E7EEFA;
+    --red:#D6493D; --red-s:#FBEAE8; --red-d:#9B2C22;
+    --purple:#7C3AED; --purple-s:#EDE9FE;
+    --disp:'Fraunces',Georgia,serif; --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--body); color:var(--txt); background:var(--panel); display:flex; min-height:100vh}
+
+  /* ===== MENU LATERAL ===== */
+  .side{width:236px;flex:0 0 236px;background:var(--navy);color:#F8F7F3;display:flex;flex-direction:column;padding:22px 0;position:sticky;top:0;height:100vh}
+  .side .brand{display:flex;align-items:center;gap:11px;padding:0 22px 22px}
+  .side .brand svg{width:32px;height:32px}
+  .side .brand .wm{font-family:var(--disp);font-weight:600;font-size:21px}
+  .side nav{display:flex;flex-direction:column;gap:2px;padding:8px 12px;flex:1}
+  .side .nav-label{font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(248,247,243,.4);padding:12px 10px 6px}
+  .side a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:rgba(248,247,243,.72);text-decoration:none;font-size:14px;font-weight:500;transition:background .15s,color .15s}
+  .side a .ico{width:19px;text-align:center;font-size:15px}
+  .side a:hover{background:rgba(255,255,255,.06);color:#F8F7F3}
+  .side a.on{background:var(--green);color:#fff;font-weight:600}
+  .side .side-foot{padding:14px 22px 0;border-top:1px solid rgba(255,255,255,.08);margin:0 12px}
+  .side .who{display:flex;align-items:center;gap:10px;padding-top:12px}
+  .side .who .av{width:34px;height:34px;border-radius:50%;background:var(--green);display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff}
+  .side .who .nm{font-size:13px;font-weight:600;color:#F8F7F3}
+  .side .who .em{font-size:11px;color:rgba(248,247,243,.5)}
+
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{height:60px;background:var(--panel-2);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:5}
+  .topbar .ctx{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+  .topbar .emp{display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-weight:600;color:var(--txt);font-size:12.5px}
+  .topbar .emp .dot{width:7px;height:7px;border-radius:50%;background:var(--green-l)}
+  .menu-btn{display:none;width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--panel-2);place-items:center;cursor:pointer;font-size:17px}
+
+  .content{padding:26px 30px;max-width:1080px;width:100%}
+  .greet{margin-bottom:20px}
+  .greet .hi{font-family:var(--disp);font-weight:600;font-size:25px;letter-spacing:-.3px}
+  .greet .sub{font-size:14px;color:var(--muted);margin-top:2px}
+
+  /* ===== BARRA DE RESUMO ===== */
+  .resumo-bar{background:var(--panel-2);border:1px solid var(--line);border-radius:16px;padding:16px 22px;margin-bottom:20px;display:flex;align-items:center;gap:0;flex-wrap:wrap}
+  .rb-item{display:flex;flex-direction:column;align-items:center;padding:0 22px;border-right:1px solid var(--line);gap:3px}
+  .rb-item:last-child{border-right:none}
+  .rb-item .rn{font-family:var(--disp);font-size:26px;font-weight:600;line-height:1}
+  .rb-item .rl{font-size:11.5px;color:var(--muted)}
+  .rb-item .rb{display:inline-block;padding:2px 8px;border-radius:7px;font-size:11px;font-weight:800;margin-bottom:3px}
+  .rb-item:first-child{padding-left:0}
+
+  /* Cores dos níveis */
+  .na{background:#FEF3C7;color:#92400E}
+  .nb{background:var(--blue-s);color:var(--blue)}
+  .nc{background:var(--green-s);color:var(--green-d)}
+  .nd{background:var(--purple-s);color:var(--purple)}
+  .ne{background:#F3F4F6;color:#374151}
+  .nivel{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:6px}
+
+  /* ===== BUSCA + FILTROS ===== */
+  .barra{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .busca{flex:1;min-width:200px;position:relative}
+  .busca input{width:100%;padding:9px 14px 9px 36px;border:1.5px solid var(--line);border-radius:11px;font-family:var(--body);font-size:13.5px;color:var(--txt);background:var(--panel-2);transition:border-color .15s}
+  .busca input:focus{outline:none;border-color:var(--green)}
+  .busca .bi{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px}
+  .filtros{display:flex;gap:7px;flex-wrap:wrap}
+  .filtro{padding:7px 14px;border-radius:20px;font-size:12.5px;font-weight:700;cursor:pointer;border:1.5px solid var(--line);background:var(--panel-2);color:var(--muted);transition:all .15s;white-space:nowrap}
+  .filtro.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .filtro.fa{border-color:#92400E;color:#92400E}.filtro.fa.on{background:#92400E;color:#fff}
+  .filtro.fb{border-color:var(--blue);color:var(--blue)}.filtro.fb.on{background:var(--blue);color:#fff}
+  .filtro.fc{border-color:var(--green-d);color:var(--green-d)}.filtro.fc.on{background:var(--green-d);color:#fff}
+  .filtro.fd{border-color:var(--purple);color:var(--purple)}.filtro.fd.on{background:var(--purple);color:#fff}
+  .filtro.fe{border-color:#374151;color:#374151}.filtro.fe.on{background:#374151;color:#fff}
+
+  /* ===== LAYOUT COLUNAS ===== */
+  .cols{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+
+  /* ===== LISTA DE CLIENTES ===== */
+  .cli-list{display:flex;flex-direction:column;gap:10px}
+  .cli{background:var(--panel-2);border:1.5px solid var(--line);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:13px;cursor:pointer;transition:box-shadow .15s,border-color .15s}
+  .cli:hover{box-shadow:0 4px 16px rgba(0,0,0,.06);border-color:var(--navy)}
+  .cli .cav{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;flex:0 0 auto}
+  .cli .cinfo{flex:1;min-width:0}
+  .cli .crow1{display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap}
+  .cli .cnm{font-size:14px;font-weight:700}
+  .cli .ccid{font-size:12px;color:var(--muted)}
+  .cli .crow2{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--muted)}
+  .cli .crow2 span{display:flex;align-items:center;gap:4px}
+  .cli .cmeta{text-align:right;flex:0 0 auto}
+  .cli .cval{font-family:var(--disp);font-size:15px;font-weight:600;color:var(--txt)}
+  .cli .cdata{font-size:11px;color:var(--muted-2);margin-top:2px}
+  .cli.parado{border-color:rgba(180,83,9,.3);background:#FFFBF5}
+
+  /* ===== PAINEL LATERAL: atenção + dica ===== */
+  .aside-card{background:var(--panel-2);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+  .aside-card .ah{font-size:13.5px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .silv-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .silv-item:last-child{border-bottom:none}
+  .silv-item .si{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-weight:700;font-size:11px;color:#fff;flex:0 0 auto}
+  .silv-item .st{flex:1}
+  .silv-item .sn{font-size:13px;font-weight:600}
+  .silv-item .sd{font-size:11.5px;color:var(--muted)}
+  .silv-item .sg{font-size:12px;color:var(--amber);font-weight:700}
+  .nivel-guide .ng-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+  .nivel-guide .ng-item:last-child{border-bottom:none}
+  .nivel-guide .nd-txt{font-size:12px;color:var(--muted);line-height:1.4}
+
+  .demo-tag{position:fixed;bottom:14px;right:14px;background:var(--navy);color:#fff;font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;opacity:.85;z-index:20}
+
+  /* ===== MODAL PERFIL ===== */
+  .overlay{position:fixed;inset:0;background:rgba(11,18,32,.55);display:none;align-items:center;justify-content:center;z-index:40;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:var(--panel);width:100%;max-width:500px;max-height:90vh;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+  .modal-head{background:var(--panel-2);border-bottom:1px solid var(--line);padding:18px 20px;display:flex;align-items:center;gap:13px}
+  .modal-head .mav{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;font-weight:700;color:#fff;font-size:16px}
+  .modal-head .minfo .mn{font-size:16px;font-weight:700}
+  .modal-head .minfo .ms{font-size:12.5px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:8px}
+  .modal-head .close{margin-left:auto;width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:15px;color:var(--muted)}
+  .modal-body{padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+  .m-sec{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .info-item{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 13px}
+  .info-item .il{font-size:11px;color:var(--muted);margin-bottom:3px}
+  .info-item .iv{font-size:13.5px;font-weight:700}
+  .hist-item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}
+  .hist-item:last-child{border-bottom:none}
+  .hist-item .hd{font-size:13px;color:var(--txt)}
+  .hist-item .hv{font-size:13px;font-weight:700;color:var(--green-d)}
+  .modal-foot{padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2);display:flex;gap:9px}
+  .btn-wpp{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:#25D366;color:#fff;border:none;border-radius:10px;padding:12px;font-family:var(--body);font-size:13.5px;font-weight:700;cursor:pointer}
+  .btn-nivel{display:flex;align-items:center;gap:6px;background:var(--panel);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:11px 15px;font-family:var(--body);font-size:13px;font-weight:600;cursor:pointer}
+
+  @media(max-width:920px){
+    .cols{grid-template-columns:1fr}
+    .side{position:fixed;left:-236px;z-index:30;transition:left .2s;box-shadow:4px 0 24px rgba(0,0,0,.2)}
+    .side.open{left:0}
+    .menu-btn{display:grid!important}
+    .rb-item{padding:8px 14px}
+  }
+</style>
+</head>
+<body>
+
+  <!-- MENU LATERAL -->
+  <aside class="side" id="side">
+    <div class="brand">
+      <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><polygon points="42,14 84,14 62,50" fill="#047857"/><polygon points="8,14 40,14 58,66 74,14 88,14 62,86 46,86" fill="#F8F7F3"/></svg>
+      <span class="wm">Vendora</span>
+    </div>
+    <nav>
+      <a href="painel.html"><span class="ico">🏠</span> Resumo do dia</a>
+      <a href="conversas.html"><span class="ico">💬</span> Conversas</a>
+      <a href="pedidos.html"><span class="ico">✅</span> Pedidos</a>
+      <a class="on" href="clientes.html"><span class="ico">👥</span> Clientes</a>
+      <a href="#"><span class="ico">🏢</span> Minhas empresas</a>
+      <a href="#"><span class="ico">📦</span> Catálogo</a>
+      <div class="nav-label">Conta</div>
+      <a href="#"><span class="ico">⚙️</span> Configurações</a>
+    </nav>
+    <div class="side-foot"><div class="who"><div class="av">C</div><div><div class="nm">Cleber</div><div class="em">Cleber Representações</div></div></div></div>
+  </aside>
+
+  <!-- ÁREA PRINCIPAL -->
+  <div class="main">
+    <div class="topbar">
+      <div class="ctx">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <span>Vendendo por:</span>
+        <span class="emp"><span class="dot"></span> Furacão</span>
+        <span class="emp"><span class="dot"></span> Rolês</span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="greet">
+        <div class="hi">Clientes</div>
+        <div class="sub">Sua carteira completa — quem compra, quem sumiu, quem merece atenção.</div>
+      </div>
+
+      <!-- RESUMO DOS NÍVEIS -->
+      <div class="resumo-bar">
+        <div class="rb-item"><div class="rn">38</div><div class="rl">total de clientes</div></div>
+        <div class="rb-item"><div class="rb na">A</div><div class="rn" style="color:#92400E">6</div><div class="rl">top da carteira</div></div>
+        <div class="rb-item"><div class="rb nb">B</div><div class="rn" style="color:var(--blue)">11</div><div class="rl">bons compradores</div></div>
+        <div class="rb-item"><div class="rb nc">C</div><div class="rn" style="color:var(--green-d)">13</div><div class="rl">regulares</div></div>
+        <div class="rb-item"><div class="rb nd">D</div><div class="rn" style="color:var(--purple)">5</div><div class="rl">ocasionais</div></div>
+        <div class="rb-item"><div class="rb ne">E</div><div class="rn" style="color:#374151">3</div><div class="rl">inativos/parados</div></div>
+      </div>
+
+      <!-- BUSCA + FILTROS -->
+      <div class="barra">
+        <div class="busca"><span class="bi">🔍</span><input type="text" id="busca" placeholder="Buscar cliente por nome ou cidade..." oninput="filtrarClientes()"></div>
+        <div class="filtros">
+          <div class="filtro on" onclick="setFiltro('todos',this)">Todos</div>
+          <div class="filtro fa" onclick="setFiltro('A',this)">Nível A</div>
+          <div class="filtro fb" onclick="setFiltro('B',this)">Nível B</div>
+          <div class="filtro fc" onclick="setFiltro('C',this)">Nível C</div>
+          <div class="filtro fd" onclick="setFiltro('D',this)">Nível D</div>
+          <div class="filtro fe" onclick="setFiltro('E',this)">Parados</div>
+        </div>
+      </div>
+
+      <div class="cols">
+        <!-- LISTA -->
+        <div>
+          <div class="cli-list" id="cliList">
+            <!-- Nível A -->
+            <div class="cli" onclick="abrirPerfil('silva')" data-nivel="A" data-nome="Auto Peças Silva" data-cidade="Belo Horizonte">
+              <div class="cav" style="background:#92400E">AP</div>
+              <div class="cinfo">
+                <div class="crow1"><span class="cnm">Auto Peças Silva</span><span class="nivel na">A</span></div>
+                <div class="crow2"><span>📍 Belo Horizonte</span><span>📦 Furacão</span><span>💬 ativo hoje</span></div>
+              </div>
+              <div class="cmeta"><div class="cval">R$ 3.240</div><div class="cdata">último pedido: hoje</div></div>
+            </div>
+
+            <div class="cli" onclick="abrirPerfil('vega')" data-nivel="A" data-nome="Auto Center Vega" data-cidade="Contagem">
+              <div class="cav" style="background:#B45309">AV</div>
+              <div class="cinfo">
+                <div class="crow1"><span class="cnm">Auto Center Vega</span><span class="nivel na">A</span></div>
+                <div class="crow2"><span>📍 Contagem</span><span>📦 Furacão + Rolês</span><span>💬 ativo hoje</span></div>
+              </div>
+              <div class="cmeta"><div class="cval">R$ 1.420</div><div class="cdata">último pedido: hoje</div></div>
+            </div>
+
+            <!-- Nível B -->
+            <div class="cli" onclick="abrirPerfil('ze')" data-nivel="B" data-nome="Oficina do Zé" data-cidade="Betim">
+              <div class="cav" style="background:#3B6FD4">OZ</div>
+              <div class="cinfo">
+                <div class="crow1"><span class="cnm">Oficina do Zé</span><span class="nivel nb">B</span></div>
+                <div class="crow2"><span>📍 Betim</span><span>📦 Rolês</span><span>💬 ativo hoje</span></div>
+              </div>
+              <div class="cmeta"><div class="cval">R$ 1.890</div><div class="cdata">último pedido: hoje</div></div>
+            </div>
+
+            <div class="cli" onclick="abrirPerfil('marcio')" data-nivel="B" data-nome="Oficina do Márcio" data-cidade="Belo Horizonte">
+              <div class="cav" style="background:#1D4ED8">OM</div>
+              <div class="cinfo">
+                <div class="crow1"><span class="cnm">Oficina do Márcio</span><span class="nivel nb">B</span></div>
+                <div class="crow2"><span>📍 Belo Horizonte</span><span>📦 Furacão</span><span>💬 ativo hoje</span></div>
+              </div>
+              <div class="cmeta"><div class="cval">R$ 560</div><div class="cdata">último pedido: hoje</div></div>
+            </div>
+
+            <!-- Nível C -->
+            <div class="cli" onclick="abrirPerfil('cardoso')" data-nivel="C" data-nome="Auto Peças Cardoso" data-cidade="Ribeirão das Neves">
+              <div class="cav" style="background:#047857">AC</div>
+              <div class="cinfo">
+                <div class="crow1"><span class="cnm">Auto Peças Cardoso</span><span class="nivel nc">C</span></div>
+                <div class="crow2"><span>📍 Ribeirão das Neves</span><span>📦 Furacão</span><span>💬 ativo hoje</span></div>
+              </div>
+              <div class="cmeta"><div class="cval">R$ 3.300</div><div class="cdata">último pedido: hoje</div></div>
+            </div>
+
+            <div class="cli" onclick="abrirPerfil('duda')" data-nivel="C" data-nome="Auto Center Duda" data-cidade="Santa Luzia">
+              <div class="cav" style="background:#065F46">AD</div>
+              <div class="cinfo">
+                <div class="crow1"><span class="cnm">Auto Center Duda</span><span class="nivel nc">C</span></div>
+                <div class="crow2"><span>📍 Santa Luzia</span><span>📦 Furacão + Rolês</span><span>💬 hoje</span></div>
+              </div>
+              <div class="cmeta"><div class="cval">R$ 740</div><div class="cdata">último pedido: ontem</div></div>
+            </div>
+
+            <!-- Nível E (parados) -->
+            <div class="cli parado" onclick="abrirPerfil('peixe')" data-nivel="E" data-nome="Peças Peixoto" data-cidade="Vespasiano">
+              <div class="cav" style="background:#6B7280">PP</div>
+              <div class="cinfo">
+                <div class="crow1"><span class="cnm">Peças Peixoto</span><span class="nivel ne">E</span><span style="font-size:11px;color:var(--amber);font-weight:700">⚠ 47 dias parado</span></div>
+                <div class="crow2"><span>📍 Vespasiano</span><span>📦 Furacão</span><span style="color:var(--amber)">Silvio em contato</span></div>
+              </div>
+              <div class="cmeta"><div class="cval" style="color:var(--muted)">R$ 0</div><div class="cdata">últ. pedido: 47 dias</div></div>
+            </div>
+
+            <div class="cli parado" onclick="abrirPerfil('xis')" data-nivel="E" data-nome="Peças Xis" data-cidade="Pedro Leopoldo">
+              <div class="cav" style="background:#6B7280">PX</div>
+              <div class="cinfo">
+                <div class="crow1"><span class="cnm">Peças Xis</span><span class="nivel ne">E</span><span style="font-size:11px;color:var(--amber);font-weight:700">⚠ 31 dias parado</span></div>
+                <div class="crow2"><span>📍 Pedro Leopoldo</span><span>📦 Rolês</span><span style="color:var(--amber)">Silvio em contato</span></div>
+              </div>
+              <div class="cmeta"><div class="cval" style="color:var(--muted)">R$ 0</div><div class="cdata">últ. pedido: 31 dias</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUNA LATERAL -->
+        <div>
+          <!-- Silvio em ação -->
+          <div class="aside-card">
+            <div class="ah">🔁 Silvio recuperando</div>
+            <div class="silv-item">
+              <div class="si" style="background:#6B7280">PP</div>
+              <div class="st"><div class="sn">Peças Peixoto</div><div class="sd">Parado há 47 dias</div></div>
+              <div class="sg">em contato</div>
+            </div>
+            <div class="silv-item">
+              <div class="si" style="background:#6B7280">PX</div>
+              <div class="st"><div class="sn">Peças Xis</div><div class="sd">Parado há 31 dias</div></div>
+              <div class="sg">em contato</div>
+            </div>
+          </div>
+
+          <!-- Guia dos níveis -->
+          <div class="aside-card nivel-guide">
+            <div class="ah">🏆 O que significa cada nível</div>
+            <div class="ng-item"><span class="nivel na" style="min-width:28px;text-align:center">A</span><div class="nd-txt"><b>Top da carteira.</b> Desconto máximo, prioridade total, atenção especial da Ana.</div></div>
+            <div class="ng-item"><span class="nivel nb" style="min-width:28px;text-align:center">B</span><div class="nd-txt"><b>Bons compradores.</b> Condição padrão boa, compram com regularidade.</div></div>
+            <div class="ng-item"><span class="nivel nc" style="min-width:28px;text-align:center">C</span><div class="nd-txt"><b>Regulares.</b> Compram mas não são fiéis — merecem atenção da Ana.</div></div>
+            <div class="ng-item"><span class="nivel nd" style="min-width:28px;text-align:center">D</span><div class="nd-txt"><b>Ocasionais.</b> Compram esporadicamente — potencial de crescer.</div></div>
+            <div class="ng-item"><span class="nivel ne" style="min-width:28px;text-align:center">E</span><div class="nd-txt"><b>Parados/inativos.</b> Terreno do Silvio — recuperar antes de perder.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-tag">demonstração · dados de exemplo</div>
+
+  <!-- MODAL PERFIL -->
+  <div class="overlay" id="overlay" onclick="if(event.target===this)fecharPerfil()">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="mav" id="pAv">AP</div>
+        <div class="minfo">
+          <div class="mn" id="pNome">Auto Peças Silva</div>
+          <div class="ms"><span id="pNivel"></span><span id="pCidade"></span></div>
+        </div>
+        <button class="close" onclick="fecharPerfil()">✕</button>
+      </div>
+      <div class="modal-body" id="pBody"></div>
+      <div class="modal-foot">
+        <button class="btn-wpp">💬 Abrir no WhatsApp</button>
+        <button class="btn-nivel">✎ Mudar nível</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const side=document.getElementById('side'), menuBtn=document.getElementById('menuBtn');
+  if(menuBtn) menuBtn.addEventListener('click',()=>side.classList.toggle('open'));
+  document.querySelectorAll('.side a').forEach(a=>a.addEventListener('click',()=>{if(window.innerWidth<=920)side.classList.remove('open')}));
+
+  // dados dos clientes
+  const CLIENTES = {
+    silva:{av:"AP",cor:"#92400E",nome:"Auto Peças Silva",nivel:"A",cidade:"Belo Horizonte",tel:"(31) 99123-4567",emp:"Furacão",
+      stats:[{l:"Pedidos este mês",v:"6"},{l:"Faturamento mês",v:"R$ 9.480"},{l:"Ticket médio",v:"R$ 1.580"},{l:"Cliente desde",v:"2019"}],
+      hist:[{d:"Amortecedor Cofap (4 un) · Pastilha Nakata (2 jg)",v:"R$ 3.240"},{d:"Filtro de óleo Fram · Correia dentada Gates",v:"R$ 890"},{d:"Kit freio completo Nakata",v:"R$ 1.240"}],
+      obs:"Cliente antigo e fiel. Sempre paga no prazo. Prefere contato pela manhã. Desconto fixo de 8% já negociado."},
+    vega:{av:"AV",cor:"#B45309",nome:"Auto Center Vega",nivel:"A",cidade:"Contagem",tel:"(31) 98765-4321",emp:"Furacão + Rolês",
+      stats:[{l:"Pedidos este mês",v:"4"},{l:"Faturamento mês",v:"R$ 5.200"},{l:"Ticket médio",v:"R$ 1.300"},{l:"Cliente desde",v:"2021"}],
+      hist:[{d:"Kit embreagem LUK · Disco freio SAC",v:"R$ 1.420"},{d:"Amortecedor + pastilhas Furacão",v:"R$ 2.100"},{d:"Filtros + velas NGK",v:"R$ 680"}],
+      obs:"Compra das duas empresas. Boa regularidade. Gosta de ser avisado de promoções."},
+    ze:{av:"OZ",cor:"#3B6FD4",nome:"Oficina do Zé",nivel:"B",cidade:"Betim",tel:"(31) 97654-3210",emp:"Rolês",
+      stats:[{l:"Pedidos este mês",v:"3"},{l:"Faturamento mês",v:"R$ 3.900"},{l:"Ticket médio",v:"R$ 1.300"},{l:"Cliente desde",v:"2022"}],
+      hist:[{d:"Pastilha LUK (4 jg) · Disco SAC (2 jg)",v:"R$ 1.890"},{d:"Kit embreagem LUK Palio",v:"R$ 1.100"},{d:"Rolamento roda dianteiro VAL",v:"R$ 910"}],
+      obs:"Compra somente da Rolês. Bom pagador. Prefere listar os itens no WhatsApp."},
+    marcio:{av:"OM",cor:"#1D4ED8",nome:"Oficina do Márcio",nivel:"B",cidade:"Belo Horizonte",tel:"(31) 96543-2109",emp:"Furacão",
+      stats:[{l:"Pedidos este mês",v:"2"},{l:"Faturamento mês",v:"R$ 1.100"},{l:"Ticket médio",v:"R$ 550"},{l:"Cliente desde",v:"2023"}],
+      hist:[{d:"Rolamento + cubo roda Cofap",v:"R$ 560"},{d:"Pastilha Nakata dianteira + traseira",v:"R$ 540"}],
+      obs:"Pediu exceção de garantia hoje — aguardando decisão do Cleber. Bom relacionamento."},
+    cardoso:{av:"AC",cor:"#047857",nome:"Auto Peças Cardoso",nivel:"C",cidade:"Ribeirão das Neves",tel:"(31) 95432-1098",emp:"Furacão",
+      stats:[{l:"Pedidos este mês",v:"2"},{l:"Faturamento mês",v:"R$ 4.100"},{l:"Ticket médio",v:"R$ 2.050"},{l:"Cliente desde",v:"2023"}],
+      hist:[{d:"Kit embreagem Cofap · Vela NGK (3 jg)",v:"R$ 3.300"},{d:"Amortecedor traseiro Cofap",v:"R$ 800"}],
+      obs:"Pedidos grandes mas espaçados. Potencial pra virar nível B com mais atenção."},
+    duda:{av:"AD",cor:"#065F46",nome:"Auto Center Duda",nivel:"C",cidade:"Santa Luzia",tel:"(31) 94321-0987",emp:"Furacão + Rolês",
+      stats:[{l:"Pedidos este mês",v:"3"},{l:"Faturamento mês",v:"R$ 1.800"},{l:"Ticket médio",v:"R$ 600"},{l:"Cliente desde",v:"2024"}],
+      hist:[{d:"Pastilha + disco freio Kit",v:"R$ 740"},{d:"Filtro óleo + ar + combustível",v:"R$ 420"},{d:"Correia alternador Gates",v:"R$ 640"}],
+      obs:"Cliente novo, comprando bem. Boa evolução — monitorar pra promover a nível B."},
+    peixe:{av:"PP",cor:"#6B7280",nome:"Peças Peixoto",nivel:"E",cidade:"Vespasiano",tel:"(31) 93210-9876",emp:"Furacão",
+      stats:[{l:"Último pedido",v:"47 dias"},{l:"Faturamento mês",v:"R$ 0"},{l:"Ticket médio (histórico)",v:"R$ 680"},{l:"Cliente desde",v:"2022"}],
+      hist:[{d:"Pastilha Nakata · Filtro Fram",v:"R$ 590"},{d:"Vela NGK · Óleo filtro",v:"R$ 380"},{d:"Amortecedor dianteiro Cofap",v:"R$ 820"}],
+      obs:"Sumiu sem motivo aparente. Silvio tentou contato duas vezes — ainda sem resposta. Vale uma ligação pessoal do Cleber."},
+    xis:{av:"PX",cor:"#6B7280",nome:"Peças Xis",nivel:"E",cidade:"Pedro Leopoldo",tel:"(31) 92109-8765",emp:"Rolês",
+      stats:[{l:"Último pedido",v:"31 dias"},{l:"Faturamento mês",v:"R$ 0"},{l:"Ticket médio (histórico)",v:"R$ 440"},{l:"Cliente desde",v:"2023"}],
+      hist:[{d:"Pastilha LUK dianteira",v:"R$ 280"},{d:"Disco freio SAC",v:"R$ 390"},{d:"Kit embreagem LUK",v:"R$ 660"}],
+      obs:"Comprava bem da Rolês. Disse que ia 'pesquisar preço'. Silvio enviou proposta especial ontem."},
+  };
+
+  let filtroAtivo = 'todos';
+
+  function setFiltro(f, el){
+    filtroAtivo = f;
+    document.querySelectorAll('.filtro').forEach(e=>e.classList.remove('on'));
+    el.classList.add('on');
+    filtrarClientes();
+  }
+
+  function filtrarClientes(){
+    const busca = document.getElementById('busca').value.toLowerCase();
+    document.querySelectorAll('.cli').forEach(el=>{
+      const nivel = el.dataset.nivel;
+      const nome = el.dataset.nome.toLowerCase();
+      const cidade = el.dataset.cidade.toLowerCase();
+      const okFiltro = filtroAtivo==='todos' || nivel===filtroAtivo || (filtroAtivo==='E' && nivel==='E');
+      const okBusca = !busca || nome.includes(busca) || cidade.includes(busca);
+      el.style.display = (okFiltro && okBusca) ? 'flex' : 'none';
+    });
+  }
+
+  function abrirPerfil(id){
+    const c=CLIENTES[id]; if(!c) return;
+    document.getElementById('pAv').textContent=c.av;
+    document.getElementById('pAv').style.background=c.cor;
+    document.getElementById('pNome').textContent=c.nome;
+    document.getElementById('pNivel').innerHTML=`<span class="nivel n${c.nivel.toLowerCase()}">${c.nivel}</span>`;
+    document.getElementById('pCidade').textContent=`📍 ${c.cidade} · 📞 ${c.tel}`;
+    document.getElementById('pBody').innerHTML=`
+      <div><div class="m-sec">Números da conta</div>
+        <div class="info-grid">${c.stats.map(s=>`<div class="info-item"><div class="il">${s.l}</div><div class="iv">${s.v}</div></div>`).join('')}</div>
+      </div>
+      <div><div class="m-sec">Últimos pedidos</div>
+        ${c.hist.map(h=>`<div class="hist-item"><div class="hd">${h.d}</div><div class="hv">${h.v}</div></div>`).join('')}
+      </div>
+      <div><div class="m-sec">Observações</div>
+        <div style="background:var(--gold-s);border:1px solid rgba(191,164,106,.3);border-radius:11px;padding:12px 14px;font-size:13px;line-height:1.55">${c.obs}</div>
+      </div>
+    `;
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function fecharPerfil(){ document.getElementById('overlay').classList.remove('open'); }
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') fecharPerfil(); });
+</script>
+</body>
+</html>
