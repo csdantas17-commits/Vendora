@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendora — Minhas empresas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220; --panel:#F8F7F3; --panel-2:#FFFFFF;
+    --green:#047857; --green-d:#065F46; --green-l:#10B981; --green-s:#E4F1EB;
+    --gold:#BFA46A; --gold-s:#F6F1E4;
+    --txt:#111827; --muted:#6B7280; --muted-2:#9AA1AC; --line:#E5E2D9;
+    --navy:#0B1220; --amber:#B45309; --amber-s:#F6EFE0;
+    --blue:#3B6FD4; --blue-s:#E7EEFA;
+    --red:#D6493D; --red-s:#FBEAE8; --red-d:#9B2C22;
+    --disp:'Fraunces',Georgia,serif; --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--body);color:var(--txt);background:var(--panel);display:flex;min-height:100vh}
+
+  /* MENU */
+  .side{width:236px;flex:0 0 236px;background:var(--navy);color:#F8F7F3;display:flex;flex-direction:column;padding:22px 0;position:sticky;top:0;height:100vh}
+  .side .brand{display:flex;align-items:center;gap:11px;padding:0 22px 22px}
+  .side .brand svg{width:32px;height:32px}
+  .side .brand .wm{font-family:var(--disp);font-weight:600;font-size:21px}
+  .side nav{display:flex;flex-direction:column;gap:2px;padding:8px 12px;flex:1}
+  .side .nav-label{font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(248,247,243,.4);padding:12px 10px 6px}
+  .side a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:rgba(248,247,243,.72);text-decoration:none;font-size:14px;font-weight:500;transition:background .15s,color .15s}
+  .side a .ico{width:19px;text-align:center;font-size:15px}
+  .side a:hover{background:rgba(255,255,255,.06);color:#F8F7F3}
+  .side a.on{background:var(--green);color:#fff;font-weight:600}
+  .side .side-foot{padding:14px 22px 0;border-top:1px solid rgba(255,255,255,.08);margin:0 12px}
+  .side .who{display:flex;align-items:center;gap:10px;padding-top:12px}
+  .side .who .av{width:34px;height:34px;border-radius:50%;background:var(--green);display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff}
+  .side .who .nm{font-size:13px;font-weight:600;color:#F8F7F3}
+  .side .who .em{font-size:11px;color:rgba(248,247,243,.5)}
+
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{height:60px;background:var(--panel-2);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:5}
+  .topbar .ctx{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+  .menu-btn{display:none;width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--panel-2);place-items:center;cursor:pointer;font-size:17px}
+
+  .content{padding:26px 30px;max-width:960px;width:100%}
+  .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+  .page-head .ph-txt .hi{font-family:var(--disp);font-weight:600;font-size:25px;letter-spacing:-.3px}
+  .page-head .ph-txt .sub{font-size:14px;color:var(--muted);margin-top:2px}
+  .btn-add{display:flex;align-items:center;gap:8px;background:var(--green);color:#fff;border:none;border-radius:11px;padding:11px 18px;font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;transition:background .15s,transform .05s;white-space:nowrap}
+  .btn-add:hover{background:var(--green-d)}
+  .btn-add:active{transform:translateY(1px)}
+
+  /* CONTADOR */
+  .count-line{font-size:13px;color:var(--muted);margin-bottom:16px}
+  .count-line b{color:var(--txt);font-weight:700}
+
+  /* LISTA DE EMPRESAS */
+  .emp-list{display:flex;flex-direction:column;gap:14px}
+  .emp-card{background:var(--panel-2);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .emp-top{padding:18px 20px;display:flex;align-items:flex-start;gap:15px}
+  .emp-logo{width:52px;height:52px;border-radius:13px;display:grid;place-items:center;font-weight:700;font-size:17px;color:#fff;flex:0 0 auto}
+  .emp-body{flex:1;min-width:0}
+  .emp-nm-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:3px}
+  .emp-nm{font-size:16px;font-weight:700}
+  .emp-fant{font-size:13px;color:var(--muted);font-style:italic}
+  .emp-status{font-size:11px;font-weight:700;padding:3px 9px;border-radius:7px;background:var(--green-s);color:var(--green-d);display:inline-flex;align-items:center;gap:5px}
+  .emp-status .d{width:6px;height:6px;border-radius:50%;background:var(--green-l)}
+  .emp-marcas{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+  .marca{font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:7px;background:var(--panel);border:1px solid var(--line);color:var(--txt)}
+  .emp-acoes{display:flex;gap:8px;flex:0 0 auto}
+  .btn-ic{width:36px;height:36px;border-radius:9px;border:1.5px solid var(--line);background:var(--panel);display:grid;place-items:center;cursor:pointer;font-size:15px;transition:all .15s}
+  .btn-ic:hover{border-color:var(--navy)}
+  .btn-ic.del:hover{border-color:var(--red);background:var(--red-s)}
+
+  .emp-regras{padding:14px 20px;background:var(--panel);border-top:1px solid var(--line);display:flex;gap:20px;flex-wrap:wrap}
+  .regra{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+  .regra b{color:var(--txt);font-weight:600}
+  .regra .ri{font-size:14px}
+
+  /* ESTADO VAZIO */
+  .vazio{background:var(--panel-2);border:2px dashed var(--line);border-radius:16px;padding:48px 30px;text-align:center;display:none}
+  .vazio.show{display:block}
+  .vazio .vi{font-size:40px;margin-bottom:14px;opacity:.5}
+  .vazio .vt{font-size:16px;font-weight:700;margin-bottom:6px}
+  .vazio .vd{font-size:13.5px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
+  .demo-tag{position:fixed;bottom:14px;right:14px;background:var(--navy);color:#fff;font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;opacity:.85;z-index:20}
+
+  /* MODAL */
+  .overlay{position:fixed;inset:0;background:rgba(11,18,32,.55);display:none;align-items:center;justify-content:center;z-index:40;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:var(--panel);width:100%;max-width:480px;max-height:90vh;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+  .modal-head{background:var(--panel-2);border-bottom:1px solid var(--line);padding:18px 20px;display:flex;align-items:center;justify-content:space-between}
+  .modal-head .mt{font-size:16px;font-weight:700}
+  .modal-head .close{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:15px;color:var(--muted)}
+  .modal-body{padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:15px}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:7px}
+  .field input,.field textarea{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;font-family:var(--body);font-size:14px;color:var(--txt);background:var(--panel-2);transition:border-color .15s}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(4,120,87,.1)}
+  .field .hint{font-size:11.5px;color:var(--muted);margin-top:5px}
+  .check-row{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--panel-2);border:1.5px solid var(--line);border-radius:10px;cursor:pointer}
+  .check-row input{width:18px;height:18px;accent-color:var(--green)}
+  .check-row .cl{font-size:13.5px;font-weight:600}
+  .check-row .cd{font-size:11.5px;color:var(--muted)}
+  .modal-foot{padding:16px 20px;border-top:1px solid var(--line);background:var(--panel-2);display:flex;gap:9px;justify-content:flex-end}
+  .btn-cancel{background:var(--panel);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:11px 18px;font-family:var(--body);font-size:13.5px;font-weight:600;cursor:pointer}
+  .btn-save{background:var(--green);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-family:var(--body);font-size:13.5px;font-weight:700;cursor:pointer}
+  .btn-save:hover{background:var(--green-d)}
+
+  .toast{position:fixed;bottom:56px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:11px 22px;border-radius:12px;font-size:13.5px;font-weight:600;opacity:0;transition:opacity .25s,transform .25s;z-index:50;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media(max-width:860px){
+    .side{position:fixed;left:-236px;z-index:30;transition:left .2s;box-shadow:4px 0 24px rgba(0,0,0,.2)}
+    .side.open{left:0}
+    .menu-btn{display:grid!important}
+    .emp-top{flex-wrap:wrap}
+    .emp-acoes{width:100%;justify-content:flex-end}
+  }
+</style>
+</head>
+<body>
+
+  <aside class="side" id="side">
+    <div class="brand">
+      <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><polygon points="42,14 84,14 62,50" fill="#047857"/><polygon points="8,14 40,14 58,66 74,14 88,14 62,86 46,86" fill="#F8F7F3"/></svg>
+      <span class="wm">Vendora</span>
+    </div>
+    <nav>
+      <a href="painel.html"><span class="ico">🏠</span> Resumo do dia</a>
+      <a href="conversas.html"><span class="ico">💬</span> Conversas</a>
+      <a href="pedidos.html"><span class="ico">✅</span> Pedidos</a>
+      <a href="clientes.html"><span class="ico">👥</span> Clientes</a>
+      <a class="on" href="empresas.html"><span class="ico">🏢</span> Minhas empresas</a>
+      <a href="#"><span class="ico">📦</span> Catálogo</a>
+      <div class="nav-label">Conta</div>
+      <a href="#"><span class="ico">⚙️</span> Configurações</a>
+    </nav>
+    <div class="side-foot"><div class="who"><div class="av">C</div><div><div class="nm">Cleber</div><div class="em">Cleber Representações</div></div></div></div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="ctx"><button class="menu-btn" id="menuBtn">☰</button><span>Gerencie as empresas que você representa.</span></div>
+    </div>
+
+    <div class="content">
+      <div class="page-head">
+        <div class="ph-txt">
+          <div class="hi">Minhas empresas</div>
+          <div class="sub">As representadas que você atende — adicione quantas precisar.</div>
+        </div>
+        <button class="btn-add" onclick="abrirModal()">+ Adicionar empresa</button>
+      </div>
+
+      <div class="count-line">Você representa <b id="contador">2 empresas</b>. Cada uma tem seu catálogo e regras próprias — nunca se misturam.</div>
+
+      <div class="emp-list" id="empList">
+        <!-- Empresa 1: Furacão -->
+        <div class="emp-card">
+          <div class="emp-top">
+            <div class="emp-logo" style="background:#047857">FW</div>
+            <div class="emp-body">
+              <div class="emp-nm-row">
+                <span class="emp-nm">FW Distribuidora</span>
+                <span class="emp-fant">"Furacão"</span>
+                <span class="emp-status"><span class="d"></span> ativa</span>
+              </div>
+              <div class="emp-marcas">
+                <span class="marca">Cofap</span><span class="marca">Nakata</span><span class="marca">SKF</span><span class="marca">Fram</span><span class="marca">Gates</span>
+              </div>
+            </div>
+            <div class="emp-acoes">
+              <button class="btn-ic" title="Editar" onclick="editar('furacao')">✎</button>
+              <button class="btn-ic del" title="Remover" onclick="remover(this,'FW Distribuidora')">🗑</button>
+            </div>
+          </div>
+          <div class="emp-regras">
+            <div class="regra"><span class="ri">💲</span><b>Preço:</b> tabela fixa</div>
+            <div class="regra"><span class="ri">📦</span><b>Catálogo:</b> 3.870 itens</div>
+            <div class="regra"><span class="ri">🚚</span><b>Entrega:</b> 1-2 dias úteis</div>
+          </div>
+        </div>
+
+        <!-- Empresa 2: Rolês -->
+        <div class="emp-card">
+          <div class="emp-top">
+            <div class="emp-logo" style="background:#0B1220">RO</div>
+            <div class="emp-body">
+              <div class="emp-nm-row">
+                <span class="emp-nm">Rolês</span>
+                <span class="emp-fant">distribuidora</span>
+                <span class="emp-status"><span class="d"></span> ativa</span>
+              </div>
+              <div class="emp-marcas">
+                <span class="marca">LUK</span><span class="marca">SAC</span><span class="marca">VAL</span>
+              </div>
+            </div>
+            <div class="emp-acoes">
+              <button class="btn-ic" title="Editar" onclick="editar('roles')">✎</button>
+              <button class="btn-ic del" title="Remover" onclick="remover(this,'Rolês')">🗑</button>
+            </div>
+          </div>
+          <div class="emp-regras">
+            <div class="regra"><span class="ri">💲</span><b>Preço:</b> muda diariamente — consultar na hora</div>
+            <div class="regra"><span class="ri">📦</span><b>Catálogo:</b> 1.240 itens</div>
+            <div class="regra"><span class="ri">🚚</span><b>Entrega:</b> 2 dias úteis</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESTADO VAZIO -->
+      <div class="vazio" id="vazio">
+        <div class="vi">🏢</div>
+        <div class="vt">Nenhuma empresa cadastrada ainda</div>
+        <div class="vd">Adicione as empresas (representadas) que você atende.<br>Cada uma terá seu catálogo e regras próprias.</div>
+        <button class="btn-add" style="margin:0 auto" onclick="abrirModal()">+ Adicionar primeira empresa</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-tag">demonstração · dados de exemplo</div>
+
+  <!-- MODAL ADICIONAR/EDITAR -->
+  <div class="overlay" id="overlay" onclick="if(event.target===this)fecharModal()">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="mt" id="modalTitulo">Adicionar empresa</div>
+        <button class="close" onclick="fecharModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label>Nome da empresa (razão social)</label>
+          <input type="text" id="fNome" placeholder="Ex: FW Distribuidora">
+        </div>
+        <div class="field">
+          <label>Nome fantasia (como é conhecida)</label>
+          <input type="text" id="fFant" placeholder="Ex: Furacão">
+          <div class="hint">É como os clientes chamam a empresa no dia a dia.</div>
+        </div>
+        <div class="field">
+          <label>Marcas que representa</label>
+          <input type="text" id="fMarcas" placeholder="Ex: Cofap, Nakata, SKF">
+          <div class="hint">Separe por vírgula.</div>
+        </div>
+        <div class="field">
+          <label>Prazo de entrega</label>
+          <input type="text" id="fEntrega" placeholder="Ex: 1-2 dias úteis">
+        </div>
+        <label class="check-row">
+          <input type="checkbox" id="fPrecoDiario">
+          <div><div class="cl">Preço muda diariamente</div><div class="cd">Marque se os preços dessa empresa precisam ser consultados na hora (como a Rolês).</div></div>
+        </label>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+        <button class="btn-save" onclick="salvar()">Salvar empresa</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  const side=document.getElementById('side'), menuBtn=document.getElementById('menuBtn');
+  if(menuBtn) menuBtn.addEventListener('click',()=>side.classList.toggle('open'));
+  document.querySelectorAll('.side a').forEach(a=>a.addEventListener('click',()=>{if(window.innerWidth<=860)side.classList.remove('open')}));
+
+  function mostrarToast(msg,cor){const t=document.getElementById('toast');t.textContent=msg;t.style.background=cor||'#0B1220';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+
+  function atualizarContador(){
+    const n=document.querySelectorAll('.emp-card').length;
+    document.getElementById('contador').textContent = n+(n===1?' empresa':' empresas');
+    document.getElementById('vazio').classList.toggle('show', n===0);
+  }
+
+  function abrirModal(){
+    document.getElementById('modalTitulo').textContent='Adicionar empresa';
+    document.getElementById('fNome').value='';
+    document.getElementById('fFant').value='';
+    document.getElementById('fMarcas').value='';
+    document.getElementById('fEntrega').value='';
+    document.getElementById('fPrecoDiario').checked=false;
+    document.getElementById('overlay').classList.add('open');
+  }
+  function fecharModal(){ document.getElementById('overlay').classList.remove('open'); }
+
+  function editar(id){
+    document.getElementById('modalTitulo').textContent='Editar empresa';
+    // demo: pré-preenche exemplo
+    if(id==='furacao'){
+      document.getElementById('fNome').value='FW Distribuidora';
+      document.getElementById('fFant').value='Furacão';
+      document.getElementById('fMarcas').value='Cofap, Nakata, SKF, Fram, Gates';
+      document.getElementById('fEntrega').value='1-2 dias úteis';
+      document.getElementById('fPrecoDiario').checked=false;
+    } else {
+      document.getElementById('fNome').value='Rolês';
+      document.getElementById('fFant').value='distribuidora';
+      document.getElementById('fMarcas').value='LUK, SAC, VAL';
+      document.getElementById('fEntrega').value='2 dias úteis';
+      document.getElementById('fPrecoDiario').checked=true;
+    }
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function salvar(){
+    const nome=document.getElementById('fNome').value.trim();
+    if(!nome){ mostrarToast('Dê um nome à empresa.', '#9B2C22'); return; }
+    fecharModal();
+    mostrarToast('✓ Empresa salva! (demo — no sistema real seria gravada)', '#065F46');
+  }
+
+  function remover(btn, nome){
+    if(!confirm('Remover '+nome+'? Essa empresa e suas regras sairão da sua conta.')) return;
+    const card=btn.closest('.emp-card');
+    card.style.opacity='0'; card.style.transform='translateX(-15px)'; card.style.transition='all .3s';
+    setTimeout(()=>{ card.remove(); atualizarContador(); },300);
+    mostrarToast('Empresa '+nome+' removida.', '#9B2C22');
+  }
+
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') fecharModal(); });
+  atualizarContador();
+</script>
+</body>
+</html>
